@@ -13,4 +13,4 @@ const errHandler = (error, req, res, next) => {
 module.exports = {
   notFound,
   errHandler,
-};
+}; // xuat model
