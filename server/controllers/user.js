@@ -1,11 +1,11 @@
 const User = require("../models/user");
+const sendMail = require("../ultils/sendmail");
 const asyncHandler = require("express-async-handler");
 const {
   generateAccessToken,
   generateRefreshToken,
 } = require("../middlewares/jwt");
 const jwt = require("jsonwebtoken");
-const user = require("../models/user");
 
 const register = asyncHandler(async (req, res) => {
   const { email, password, firstname, lastname } = req.body;
@@ -106,10 +106,48 @@ const logout = asyncHandler(async (req, res) => {
     mes: "logout is done",
   });
 });
+//client gửi email
+//server check mail có hợp lệ hay không => gửi mail + kèm theo link (password change token )
+//client check mail => click link
+//client gửi lại api kèm token
+//check token có giống với token mà server gửi mail hay không
+//charge password
+const forgotPassword = asyncHandler(async (req, res) => {
+  const { email } = req.query;
+  if (!email) throw new Error("Missing email");
+  const user = await User.findOne({ email });
+  if (!user) throw new Error("user not found");
+  const resetToken = user.createPasswordChangedToken();
+  await user.save();
+  const html = `xin vui lòng click vào link dưới đây để thay đổi mật khẩu của bạn,Link này sẽ hết hạn sau 15 phút kể từ dât giờ...<a href=${process.env.URL_SERVER}/api/user/rest-password/${resetToken}>Click here</a>`;
+  const data = {
+    email,
+    html,
+  };
+
+  try {
+    const rs = await sendMail(data);
+    console.log(rs);
+    return res.status(200).json({
+      success: true,
+      message: "Email sent successfully",
+      rs,
+    });
+  } catch (error) {
+    console.error("Error sending email:", error);
+    console.log(data);
+    return res.status(500).json({
+      success: false,
+      message: "Error sending email",
+      error: error.message,
+    });
+  }
+});
 module.exports = {
   register,
   login,
   getCurrent,
   refreshAccessToken,
   logout,
+  forgotPassword,
 };
