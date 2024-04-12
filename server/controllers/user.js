@@ -6,6 +6,8 @@ const {
   generateRefreshToken,
 } = require("../middlewares/jwt");
 const jwt = require("jsonwebtoken");
+const crypto = require("crypto");
+const user = require("../models/user");
 
 const register = asyncHandler(async (req, res) => {
   const { email, password, firstname, lastname } = req.body;
@@ -38,14 +40,23 @@ const login = asyncHandler(async (req, res) => {
   const response = await User.findOne({ email });
   if (response && (await response.isCorrectPassword(password))) {
     // tách password và role ra respon
-    const { password: password, role, ...userData } = response.toObject();
+    const {
+      password: password,
+      role,
+      refreshtoken,
+      ...userData
+    } = response.toObject();
     // tạo token
     const accessToken = generateAccessToken(response._id, role);
-    const refreshtoken = generateRefreshToken(response._id);
+    const newrefreshToken = generateRefreshToken(response._id);
     //lưu refresh token và Db
-    await User.findByIdAndUpdate(response._id, { refreshtoken }, { new: true });
+    await User.findByIdAndUpdate(
+      response._id,
+      { refreshtoken: newrefreshToken },
+      { new: true }
+    );
     // lưu  refresh token vào cookie
-    res.cookie("refreshtoken", refreshtoken, {
+    res.cookie("refreshtoken", newrefreshToken, {
       httpOnly: true,
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
@@ -62,7 +73,7 @@ const getCurrent = asyncHandler(async (req, res) => {
   const { _id } = req.user;
   const user = await User.findById(_id).select("-refreshtoken -password -role");
   return res.status(200).json({
-    success: false,
+    success: user ? true : false,
     rs: user ? user : "user not found",
   });
 });
@@ -135,13 +146,75 @@ const forgotPassword = asyncHandler(async (req, res) => {
     });
   } catch (error) {
     console.error("Error sending email:", error);
-    console.log(data);
     return res.status(500).json({
       success: false,
       message: "Error sending email",
       error: error.message,
     });
   }
+});
+const resetPassword = asyncHandler(async (req, res) => {
+  const { password, token } = req.body;
+  if (!password || !token) throw new Error("missing input");
+  const passwordResetToken = crypto
+    .createHash("sha256")
+    .update(token)
+    .digest("hex");
+  const user = await User.findOne({
+    passwordResetToken,
+    passwordResetExpires: { $gt: Date.now() },
+  });
+  if (!user) throw new Error("invalid reset token");
+  user.password = password;
+  user.passwordResetToken = undefined;
+  user.passwordChangeAt = Date.now();
+  user.passwordResetExpires = undefined;
+  await user.save();
+  return res.status(200).json({
+    success: user ? true : false,
+    message: user ? "Updated password" : "something went wrong",
+  });
+});
+const getUsers = asyncHandler(async (req, res) => {
+  const response = await User.find().select("-refreshtoken -password -role");
+  return res.status(200).json({
+    success: response ? true : false,
+    user: response,
+  });
+});
+const deletesUser = asyncHandler(async (req, res) => {
+  const { _id } = req.query;
+  if (!_id) throw new Error("Missing inputs");
+  const response = await User.findByIdAndDelete(_id);
+  return res.status(200).json({
+    success: response ? true : false,
+    deletedUser: response
+      ? `User with email ${response.email} deleted`
+      : "No user delete",
+  });
+});
+const updateUser = asyncHandler(async (req, res) => {
+  const { _id } = req.user;
+  if (!_id || Object.keys(req.body).length === 0)
+    throw new Error("Missing inputs");
+  const response = await User.findByIdAndUpdate(_id, req.body, {
+    new: true,
+  }).select("-password -role");
+  return res.status(200).json({
+    success: response ? true : false,
+    updatedUser: response ? response : "some thing went wrong",
+  });
+});
+const updateUserByAdnin = asyncHandler(async (req, res) => {
+  const { uid } = req.params;
+  if (Object.keys(req.body).length === 0) throw new Error("Missing inputs");
+  const response = await User.findByIdAndUpdate(uid, req.body, {
+    new: true,
+  }).select("-password -role");
+  return res.status(200).json({
+    success: response ? true : false,
+    updatedUser: response ? response : "some thing went wrong",
+  });
 });
 module.exports = {
   register,
@@ -150,4 +223,9 @@ module.exports = {
   refreshAccessToken,
   logout,
   forgotPassword,
+  resetPassword,
+  getUsers,
+  deletesUser,
+  updateUser,
+  updateUserByAdnin,
 };
