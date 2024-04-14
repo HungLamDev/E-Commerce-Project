@@ -121,13 +121,18 @@ const ratings = asyncHandler(async (req, res) => {
   const { star, comment, pid } = req.body;
   if (!star || !pid) throw new Error("missing inputs");
   const ratingProduct = await Product.findById(pid);
-  const alreadyRating = ratingProduct?.ratings?.some((el) =>
-    el.postedBy.some((uid=> uid === _id) )
+  const alreadyRating = ratingProduct?.ratings?.find(
+    (el) => el.postedBy.toString() === _id
   );
   console.log({ alreadyRating });
-
-  //console.log(alreadyRating)
   if (alreadyRating) {
+    await Product.updateOne(
+      {
+        ratings: { $elemMatch: alreadyRating },
+      },
+      { $set: { "ratings.$.star": star, "ratings.$.comment": comment } },
+      { new: true }
+    );
   } else {
     //add star & comments
     const response = await Product.findByIdAndUpdate(
@@ -137,10 +142,20 @@ const ratings = asyncHandler(async (req, res) => {
       },
       { new: true }
     );
-    console.log(response);
   }
+  //sum rating - avg
+  const updatedProduct = await Product.findById(pid);
+  const ratingCount = updatedProduct.ratings.length;
+  const sumRatings = updatedProduct.ratings.reduce(
+    (sum, el) => sum + +el.star,
+    0
+  );
+  updatedProduct.totalRatings =
+    Math.round((sumRatings * 10) / ratingCount) / 10;
+  await updatedProduct.save();
   return res.status(200).json({
     status: true,
+    updatedProduct,
   });
 });
 module.exports = {
