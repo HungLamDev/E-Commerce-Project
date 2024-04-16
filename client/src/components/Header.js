@@ -7,7 +7,7 @@ import path from '../ultils/path'
 const {BsTelephone,TfiEmail,BsCart,FaUserAlt} = icons
 const Header = () =>{
     return (
-        <div className='border flex w-main h-[110px]  justify-between'>
+        <div className='border-b flex w-main h-[110px]  justify-between'>
             <Link to={`/${path.HOME}`} >
             <img src={a} alt='a' className='object-contain h-[90px] pt-[10px] '></img>
             </Link>
