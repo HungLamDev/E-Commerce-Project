@@ -23,5 +23,7 @@ module.exports = {
       
     },
   },
-  plugins: [],
+  plugins: [
+    "@tailwindcss/line-clamp"
+  ],
 }

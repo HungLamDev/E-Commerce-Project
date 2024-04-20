@@ -2,20 +2,23 @@ import React, { useState, useEffect} from 'react'
 import { apiGetCategories } from '../apis/app'
 import { NavLink } from 'react-router-dom'
 import {createSlug} from '../ultils/helpers'
+import { useSelector } from 'react-redux'
 
 const Sidebar = () =>{
 
 
     // call api vào sidebar
-    const [categories , setCategories] = useState(null)
-    const fetchCategories = async () =>{
-        const response = await apiGetCategories()
-        if(response.success) setCategories(response.prodCategories)
-    }
-    useEffect(() =>{
-        fetchCategories()
-    }, [])
+    const {categories} = useSelector(state => state.app)
     console.log(categories);
+    // const [categories , setCategories] = useState(null)
+    // const fetchCategories = async () =>{
+    //     const response = await apiGetCategories()
+    //     if(response.success) setCategories(response.prodCategories)
+    // }
+    // useEffect(() =>{
+    //     fetchCategories()
+    // }, [])
+    // console.log(categories);
     // viết html
     return (
         <div className='flex flex-col'>

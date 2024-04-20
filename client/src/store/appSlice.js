@@ -1,3 +1,4 @@
+// viết get api theo bất đồng bộ
 import { createSlice } from "@reduxjs/toolkit";
 import * as actions from './asyncActions'
 
@@ -8,29 +9,25 @@ export const appSlice = createSlice({
         isLoading: false
     },
     reducers: {
-        
+        // logout: (state) => {
+        //   state.isLoading = false
+        // }
     },
     extraReducers: (builder) => {
-        // Bắt đầu thực hiện action login (Promise pending)
-        // builder.addCase(login.pending, (state) => {
-        //   // Bật trạng thái loading
-        //   state.isLoading = true;
-        // });
-    
-        // Khi thực hiện action login thành công (Promise fulfilled)
-        builder.addCase(actions.getCategories.fulfilled, (state, action) => {
-          // Tắt trạng thái loading, lưu thông tin user vào store
-          state.isLoading = false;
-          state.categories = action.payload.prodCategories;
+        builder.addCase(actions.getCategories.pending, (state) => {
+          state.isLoading = true;
         });
-    
-        // Khi thực hiện action login thất bại (Promise rejected)
+        builder.addCase(actions.getCategories.fulfilled, (state, action) => {
+          state.isLoading = false;
+          state.categories = action.payload;
+        });
         builder.addCase(actions.getCategories.rejected, (state, action) => {
-          // Tắt trạng thái loading, lưu thông báo lỗi vào store
           state.isLoading = false;
           state.errorMessage = action.payload.message;
         });
     },
 
 })
-   
+  
+export const{  } = appSlice.actions
+export default appSlice.reducer
