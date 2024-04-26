@@ -5,3 +5,10 @@ export { default as Sidebar } from './Sidebar'
 export { default as Sidebarright } from './Sidebarright'
 export { default as BestSeller } from './BestSeller'
 export { default as Product } from './Product'
+export { default as DealDaily } from './DealDaily'
+export { default as Countdown } from './Countdown'
+export { default as Dienthoai } from './Dienthoai'
+export { default as Laptop } from './Laptop'
+export { default as Tablet } from './Tablet'
+
+
