@@ -28,6 +28,7 @@ const Header = () =>{
                 </div>
                 <div className='flex items-center justify-center gap-2 px-6 border-r'>
                     <BsCart color='orange'/>
+                    
                     <span>0 items</span>
                 </div>
                 <div className='flex items-center justify-center px-6'>
