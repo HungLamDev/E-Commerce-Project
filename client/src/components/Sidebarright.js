@@ -3,8 +3,8 @@ const Sidebarright = () =>{
     return (
         <div className='w-full '>
             <div className='pb-2'>
-                <img src='https://cdn2.cellphones.com.vn/insecure/rs:fill:690:300/q:10/plain/https://dashboard.cellphones.com.vn/storage/samsung-23-right-1325.png' 
-                alt='bannerright'className='w-full object-contain rounded-[10px]' />
+                <img src='https://cdn2.cellphones.com.vn/insecure/rs:fill:690:300/q:10/plain/https://dashboard.cellphones.com.vn/storage/right sv.png'
+                alt='bannerright' className='w-full object-contain rounded-[10px]' />
             </div>
             <div className='pb-2'>
                 <img src='https://cdn2.cellphones.com.vn/insecure/rs:fill:690:300/q:10/plain/https://dashboard.cellphones.com.vn/storage/right-banner-ipad-th444.jpg' 

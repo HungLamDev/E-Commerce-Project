@@ -12,29 +12,26 @@ const Product = ({ productData, isNew }) => {
     };
     return (
         <div className='w-full text-base px-[10px]'>
-            <div className='w-full border p-[15px] '>
-                <div className='pb-6'>
-                    {isNew ? <span className='border px-4 pt-1 pb-1 rounded-[20px] text-red-600 bg-yellow-300'>New</span> : null}
-                </div>
+            <div className='w-full border p-[15px] rounded-[10px]'>
                 <div className='w-full relative'>
-                    <img src={productData?.images[0] || ''} alt='' className='w-[243px] h-[243px] object-cover' />
+                    <img src={productData?.images[0] || ''} alt='' className='w-[180px] h-[180px] object-cover' />
                 </div>
                 <div className='flex flex-col gap-2 items-center justify-center mt-[15px] pb-2'>
-                    <span className='line-clamp-1 textSize-[20px]' >
+                    <span className='line-clamp-2 text-sm'>
                         {productData?.title}
                     </span>
-                    <span className=''>
+                    <span className='text-sm'>
                         {`${formatMoney(productData?.price)} VND`}
                     </span>
                 </div>
-                <div className='flex pt-4 border-t'>
-                    <div className='w-[60%] flex pt-1'>{renderStarFromNunber(productData?.totalRatings)}</div>
-                    <div className='w-[30%] flex'>
+                <div className='flex pt-2 border-t'>
+                    <div className='w-[50%] flex pt-1 text-sm'>{renderStarFromNunber(productData?.totalRatings)}</div>
+                    <div className='w-[40%] flex text-sm'>
                         Yêu thích
                     </div>
-                    <div className='w-[10%] pb-2'>
+                    <div className='w-[5%] pb-1'>
                         <span onClick={handleClick} className ='hover:text-white cursor-pointer'>
-                            <AiFillHeart fontSize='25px' color={liked ? 'red' : '#b2a4a4'} />
+                            <AiFillHeart fontSize='20px' color={liked ? 'red' : '#b2a4a4'} />
                         </span>
                     </div>
                 </div>
