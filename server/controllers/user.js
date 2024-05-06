@@ -9,24 +9,36 @@ const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
 const user = require("../models/user");
 
+// const register = asyncHandler(async (req, res) => {
+//   const { email, password, firstname, lastname } = req.body;
+//   if (!email || !password || !firstname || !lastname)
+//     return res.status(400).json({
+//       success: false,
+//       mes: "missing input",
+//     });
+//   const user = await User.findOne({ email });
+//   if (user) throw new Error("User has existed");
+//   else {
+//     const newUser = await User.create(req.body);
+//     return res.status(200).json({
+//       success: newUser ? true : false,
+//       mes: newUser
+//         ? "Register is successfully. please login"
+//         : "something went wrong",
+//     });
+//   }
+// });
+
 const register = asyncHandler(async (req, res) => {
-  const { email, password, firstname, lastname } = req.body;
-  if (!email || !password || !firstname || !lastname)
+  const { email, password, firstname, lastname, mobile } = req.body;
+  if (!email || !password || !firstname || !lastname, !mobile)
     return res.status(400).json({
       success: false,
-      message: "missing input",
+      mes: "missing input",
     });
-  const user = await User.findOne({ email });
-  if (user) throw new Error("User has existed");
-  else {
-    const newUser = await User.create(req.body);
-    return res.status(200).json({
-      success: newUser ? true : false,
-      mes: newUser
-        ? "Register is successfully. please login"
-        : "something went wrong",
-    });
-  }
+  res.cookie('dataregister',req.body, {httpOnly: true, maxAge: 15*60*1000})
+  const html = `xin vui lòng click vào link dưới đây để hoàn tất quá trình đăng ký của bạn của bạn,Link này sẽ hết hạn sau 15 phút kể từ dât giờ...
+  <a href=${process.env.URL_SERVER}/api/user/rest-password/${resetToken}>Click here</a>`;
 });
 //refresh token => cấp mới token
 // access token xác thực phân quyền người dùng

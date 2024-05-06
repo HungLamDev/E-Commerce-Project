@@ -32,8 +32,13 @@ const Header = () =>{
                     <span>0 items</span>
                 </div>
                 <div className='flex items-center justify-center px-6'>
-                    <FaUserAlt />
+                    <Link 
+                    to={`/${path.LOGIN}`}
+                    >
+                        <FaUserAlt />
+                    </Link>
                 </div>
+                
                 
             </div>
         </div>

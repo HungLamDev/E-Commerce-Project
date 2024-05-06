@@ -3,7 +3,8 @@ import { TfiEmail } from "react-icons/tfi";
 import { FaUserAlt } from "react-icons/fa";
 import { AiOutlineHome, AiFillStar, AiOutlineStar, AiFillHeart,AiOutlineMenu   } from "react-icons/ai";
 import { CgTag } from "react-icons/cg";
-
+import {IoIosArrowForward} from "react-icons/io"
+import {MdEmail} from "react-icons/md"
 const icons ={
     BsTelephone,
     TfiEmail,
@@ -16,7 +17,9 @@ const icons ={
     AiOutlineStar ,
     AiFillHeart,
     BsHeart,
-    AiOutlineMenu
+    AiOutlineMenu,
+    IoIosArrowForward,
+    MdEmail
 
 }
 

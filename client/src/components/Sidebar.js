@@ -8,8 +8,6 @@ const Sidebar = () =>{
 
     // call api vào sidebar
     const {categories} = useSelector(state => state.app)
-    console.log(categories);
-
     // viết html
     return (
         <div className='flex flex-col'>
