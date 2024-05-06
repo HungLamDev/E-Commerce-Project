@@ -10,5 +10,7 @@ export { default as Countdown } from './Countdown'
 export { default as Dienthoai } from './Dienthoai'
 export { default as Laptop } from './Laptop'
 export { default as Tablet } from './Tablet'
-
-
+export { default as TopHeader } from './TopHeader'
+export { default as Footer } from './Footer'
+export { default as InputField } from './InputField'
+export { default as Button } from './Button'

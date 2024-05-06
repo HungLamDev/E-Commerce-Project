@@ -11,7 +11,7 @@ const tabs = [
 // react slick
 const settings = {
   dots: true,
-  infinite: false,
+  infinite: true,
   speed: 500,
   slidesToShow: 3,
   slidesToScroll: 1,
@@ -44,7 +44,7 @@ const BestSeller = () => {
 
   return (
     <div>
-      <div className='flex text-[20px]  gap-8 pb-4 border-b-2 border-main'>
+      <div className='flex text-[20px]  gap-8 pb-4 border-b-2 border-orange-600'>
         {tabs.map(el => (
           <span
             key={el.id}
