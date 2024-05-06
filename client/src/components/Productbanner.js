@@ -1,19 +1,28 @@
 import React, { useState } from 'react';
 import icons from '../ultils/icons';
 import { formatMoney, renderStarFromNunber } from '../ultils/helpers';
-
+import { Link } from 'react-router-dom';
+import path from '../ultils/path'
 const { AiFillHeart } = icons;
 
-const Product = ({ productData, isNew }) => {
+const Product = ({ productData}) => {
     const [liked, setLiked] = useState(false);
 
     const handleClick = () => {
         setLiked(!liked); 
     };
+    function customEncodeURIComponent(str) {
+        if (!str) return ''; 
+        return str.replace(/\s+/g, '%') 
+                  .replace(/\//g, '%2F');
+      }
+    const encodedTitle = customEncodeURIComponent(productData?.title);
     return (
-        <div className='w-full text-base px-[10px]'>
-            <div className='w-full border p-[15px] rounded-[10px]'>
-                <div className='w-full relative'>
+        <div className='w-full text-base px-[10px] hover:text-black cursor-pointer border rounded-[15px]'>
+            <Link 
+            to={`/${path.DETAIL_PRODUCT}/${productData?._id}/${encodedTitle}`}
+            >
+                <div className='w-full relative pt-2'>
                     <img src={productData?.images[0] || ''} alt='' className='w-[180px] h-[180px] object-cover' />
                 </div>
                 <div className='flex flex-col gap-2 items-center justify-center mt-[15px] pb-2'>
@@ -24,7 +33,8 @@ const Product = ({ productData, isNew }) => {
                         {`${formatMoney(productData?.price)} VND`}
                     </span>
                 </div>
-                <div className='flex pt-2 border-t'>
+            </Link>
+            <div className='flex pt-2 border-t p-2'>
                     <div className='w-[50%] flex pt-1 text-sm'>{renderStarFromNunber(productData?.totalRatings)}</div>
                     <div className='w-[40%] flex text-sm'>
                         Yêu thích
@@ -34,7 +44,6 @@ const Product = ({ productData, isNew }) => {
                             <AiFillHeart fontSize='20px' color={liked ? 'red' : '#b2a4a4'} />
                         </span>
                     </div>
-                </div>
             </div>
         </div>
     );
