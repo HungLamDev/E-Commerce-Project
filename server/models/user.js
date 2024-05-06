@@ -31,16 +31,23 @@ var userSchema = new mongoose.Schema(
       type: String,
       default: "user",
     },
-    cart: {
+    cart: [
+      {
+        product: { type: mongoose.Schema.Types.ObjectId, ref: "Product" },
+        quantity: Number,
+        color: String,
+      },
+    ],
+    address: {
       type: Array,
       default: [],
     },
-    address: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Address",
-      },
-    ],
+    // address: [
+    //   {
+    //     type: mongoose.Schema.Types.ObjectId,
+    //     ref: "Address",
+    //   },
+    // ],
     wishlist: [
       {
         type: mongoose.Schema.Types.ObjectId,

@@ -222,11 +222,72 @@ const updateUserByAdnin = asyncHandler(async (req, res) => {
   if (Object.keys(req.body).length === 0) throw new Error("Missing inputs");
   const response = await User.findByIdAndUpdate(uid, req.body, {
     new: true,
-  }).select("-password -role");
+  }).select("-password -role -refreshtoken");
   return res.status(200).json({
     success: response ? true : false,
     updatedUser: response ? response : "some thing went wrong",
   });
+});
+const updateUserByAddress = asyncHandler(async (req, res) => {
+  const { _id } = req.user;
+  if (!req.body.address) throw new Error("Missing inputs");
+  const response = await User.findByIdAndUpdate(
+    _id,
+    { $push: { address: req.body.address } },
+    {
+      new: true,
+    }
+  ).select("-password -role -refreshtoken");
+  return res.status(200).json({
+    success: response ? true : false,
+    updatedUser: response ? response : "some thing went wrong",
+  });
+});
+const updateCart = asyncHandler(async (req, res) => {
+  const { _id } = req.user;
+  const { pid, quantity, color } = req.body;
+  if (!pid || !quantity || !color) throw new Error("Missing inputs");
+  const user = await User.findById(_id).select();
+  const alreadyProduct = user?.cart?.find(
+    (el) => el.product.toString() === pid
+  );
+  if (alreadyProduct) {
+    if (alreadyProduct.color === color) {
+      const response = await User.updateOne(
+        { cart: { $elemMatch: alreadyProduct } },
+        { $set: { "cart.$.quantity": quantity } },
+        { new: true }
+      );
+      return res.status(200).json({
+        success: response ? true : false,
+        updatedcart: response ? response : "some thing went wrong",
+      });
+    } else {
+      const response = await User.findByIdAndUpdate(
+        _id,
+        { $push: { cart: { product: pid, quantity, color } } },
+        {
+          new: true,
+        }
+      );
+      return res.status(200).json({
+        success: response ? true : false,
+        updatedcart: response ? response : "some thing went wrong",
+      });
+    }
+  } else {
+    const response = await User.findByIdAndUpdate(
+      _id,
+      { $push: { cart: { product: pid, quantity, color } } },
+      {
+        new: true,
+      }
+    );
+    return res.status(200).json({
+      success: response ? true : false,
+      updatedcart: response ? response : "some thing went wrong",
+    });
+  }
 });
 module.exports = {
   register,
@@ -240,4 +301,6 @@ module.exports = {
   deletesUser,
   updateUser,
   updateUserByAdnin,
+  updateUserByAddress,
+  updateCart,
 };
