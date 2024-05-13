@@ -22,8 +22,7 @@ const DealDaily = () => {
   
   function customEncodeURIComponent(str) {
     if (!str) return ''; 
-    return str.replace(/\s+/g, '%') 
-              .replace(/\//g, '%2F');
+    return str .replace(/\//g, '%2F');
   }
   const encodedTitle = customEncodeURIComponent(dealdaily?.title);
   const fetchDealDaily = async () => {
@@ -42,15 +41,12 @@ const DealDaily = () => {
       setSecond(59)
     }
   }
-  // useEffect(() => { 
-  //   fetchDealDaily()
-  // },[])
   useEffect(() => { 
     idInterval && clearInterval(idInterval)
     fetchDealDaily()
    },[expiretime])
    useEffect(() => { 
-    idInterval = setInterval(() => {
+      idInterval = setInterval(() => {
       if (second > 0) {
         setSecond(prevSecond => prevSecond - 1);
       } else {
@@ -99,8 +95,8 @@ const DealDaily = () => {
           </div>
         </Link>
         <div className='flex p-4 border-t'>
-            <div className='w-[60%] flex pt-1'>{renderStarFromNunber(dealdaily?.totalRatings)?.map((star, index) => (
-                <div key={index}>{star}</div>
+            <div className='w-[60%] flex pt-1'>{renderStarFromNunber(dealdaily?.totalRatings)?.map((el, index) => (
+                <div key={index}>{el}</div>
             ))}
             </div>
             <div className='w-[30%] flex'>

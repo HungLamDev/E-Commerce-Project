@@ -57,13 +57,15 @@ const BestSeller = () => {
       </div>
       <div className='mt-4 mx-[-10px]'>
         <Slider {...settings}>
-            {products?.map(el => (
-                <Product 
-                key={el.id} 
-                pid = {el.id} 
-                productData={el} 
-                isNew={activedTab === 1 ? false : true} />
-            ))}
+        {products?.map((el, index) => (
+          <Product 
+              key={el.id || index} // Use index as a fallback key if el.id is undefined
+              pid={el.id} 
+              productData={el} 
+              isNew={activedTab === 1 ? false : true} 
+          />
+        ))}
+
         </Slider>
       </div>
     </div>

@@ -9,6 +9,8 @@ const path = {
     FAQ: 'faq', 
     DETAIL_PRODUCT: 'san-pham',
     DETAIL_PRODUCT__PID__TITLE: 'san-pham/:pid/:title',
+    FINALREGISTER: 'finalregister/:status',
+    RESET_PASSWORD: 'reset-password/:token'
 }
 
 export default path

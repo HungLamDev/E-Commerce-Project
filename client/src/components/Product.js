@@ -15,8 +15,7 @@ const Product = ({ productData, isNew }) => {
         setLiked(!liked); 
     };
     function customEncodeURIComponent(str) {
-        return str.replace(/\s+/g, '%') // Thay thế khoảng trắng bằng %
-                  .replace(/\//g, '%2F'); // Thay thế dấu / bằng %2F
+        return str.replace(/\//g, '%2F'); // Thay thế dấu / bằng %2F
     }
     const encodedTitle = customEncodeURIComponent(productData?.title);
     return (
@@ -43,9 +42,9 @@ const Product = ({ productData, isNew }) => {
                 </div>
             </Link>
             <div className='flex pt-5 border-r border-l border-b'>
-                <div className='w-[55%] flex pl-2'>{renderStarFromNunber(productData?.totalRatings)?.map((star, index) => (
-                    <div key={index}>{star}</div>
-                ))}
+            <div className='w-[60%] flex pt-1'>{renderStarFromNunber(productData?.totalRatings)?.map((el, index) => (
+                <div key={index}>{el}</div>
+            ))}
                 </div>
                 <div className='w-[30%] flex pr-2 pb-1'>
                     Yêu thích

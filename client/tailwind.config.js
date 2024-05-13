@@ -1,21 +1,20 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
-    "./src/**/*.{js,jsx,ts,tsx.html}",
+    "./src/**/*.{js,jsx,ts,tsx,html}", // Thêm dấu phẩy sau tsx và thêm dấu phẩy sau html
     "./public/index.html"
   ],
   theme: {
- 
-    fontFamily: {
-      main: ["Poppins", 'sans-serif']
-    },
     extend: {
       width: {
         main: '1220px'
-
+      },
+      fontFamily: {
+        main: ["Poppins", 'sans-serif']
       },
       backgroundColor: {
-        main: '#ee3131'
+        main: '#ee3131',
+        overlay: 'rgba(0,0,0,0.3)'
       },
       colors: {
         main: '#ee3131'
@@ -29,11 +28,25 @@ module.exports = {
         '7': '7 7 0%',
         '8': '8 8 0%',
         '9': '9 9 0%',
+      },
+      keyframes:{
+        'slide-right':{
+          '0%' :{
+            '-webkit-transform ' : 'translateX(-1000px);',
+            transform: 'translateX(-1000px);'
+          },
+          '100%' :{
+            '-webkit-transform ' : 'translateX(0);',
+            transform: 'translateX(0);'
+          }
+        }
+      },
+      animation: {
+        'slide-right': 'slide-right 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both' // Sửa lại tên keyframe và loại bỏ dấu chấm phẩy
       }
-      
     },
   },
   plugins: [
     "@tailwindcss/line-clamp"
   ],
-}
+};
