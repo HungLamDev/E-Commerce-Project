@@ -9,7 +9,7 @@ const Header = () =>{
     return (
         <div className='border-b flex w-main h-[110px]  justify-between'>
             <Link to={`/${path.HOME}`} >
-            <img src={a} alt='a' className='object-contain h-[90px] pt-[10px] '></img>
+            <img src={a} alt='a' className='object-contain w-full h-[90px] pt-[10px] '></img>
             </Link>
             <div className=' flex py-[36px] '>
                 <div className='flex flex-col items-center px-6 border-r text-[13px]'>
@@ -40,8 +40,6 @@ const Header = () =>{
                     </Link>
                     <span>Profile</span>
                 </div>
-                
-                
             </div>
         </div>
     )

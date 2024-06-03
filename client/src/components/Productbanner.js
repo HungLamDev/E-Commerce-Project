@@ -18,7 +18,7 @@ const Product = ({ productData}) => {
     return (
         <div className='w-full text-base px-[10px] hover:text-black cursor-pointer border rounded-[15px]'>
             <Link 
-            to={`/${path.DETAIL_PRODUCT}/${productData?._id}/${encodedTitle}`}
+                to={`/${productData?.category?.toLowerCase()}/${productData?._id}/${encodedTitle}`}
             >
                 <div className='w-full relative pt-2'>
                     <img src={productData?.images[0] || ''} alt='' className='w-[180px] h-[180px] object-cover' />

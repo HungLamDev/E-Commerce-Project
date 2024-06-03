@@ -9,6 +9,7 @@ const ResetPassword = () => {
   const handleResetPassword = async () =>{
     console.log({ password, token });
     const response = await apiResetPassword({ password, token });
+    console.log(response);
     if(response.success){
       toast.success(response.mes, {theme: 'colored'})
     }else toast.info(response.mes, {theme: 'colored'})
@@ -21,7 +22,7 @@ const ResetPassword = () => {
           type='text'
           id='password'
           className='w-[800px] h-[50px] pb-2 border-b outline-none placeholder:text-[15px]'
-          placeholder='Type here'
+          placeholder='Ex: abcd@'
           value={password}
           onChange={e=>setpassword(e.target.value)}
           />

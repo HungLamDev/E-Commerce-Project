@@ -55,7 +55,7 @@ const BestSeller = () => {
           </span>
         ))}
       </div>
-      <div className='mt-4 mx-[-10px]'>
+      <div className='mt-4 mx-[-10px] w-full'>
         <Slider {...settings}>
         {products?.map((el, index) => (
           <Product 

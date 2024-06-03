@@ -22,7 +22,7 @@ const Product = ({ productData, isNew }) => {
         <div className='w-full text-base px-[10px] '>
             <Link
             
-                to={`/${path.DETAIL_PRODUCT}/${productData?._id}/${encodedTitle}`}
+                to={`/${productData?.category?.toLowerCase()}/${productData?._id}/${encodedTitle}`}
             >
                 <div className='w-full border p-[15px]'>
                     <div className='pb-6'>
@@ -42,11 +42,11 @@ const Product = ({ productData, isNew }) => {
                 </div>
             </Link>
             <div className='flex pt-5 border-r border-l border-b'>
-            <div className='w-[60%] flex pt-1'>{renderStarFromNunber(productData?.totalRatings)?.map((el, index) => (
+            <div className='w-[55%] flex pl-2 pt-1'>{renderStarFromNunber(productData?.totalRatings)?.map((el, index) => (
                 <div key={index}>{el}</div>
             ))}
                 </div>
-                <div className='w-[30%] flex pr-2 pb-1'>
+                <div className='w-[35%] flex pr-2 pb-1'>
                     Yêu thích
                 </div>
                 <div className='w-[15%] pb-3 pr-2'>
