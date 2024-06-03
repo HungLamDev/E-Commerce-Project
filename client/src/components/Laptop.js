@@ -6,7 +6,7 @@ const Laptop = () => {
     const [Laptop, setLaptop] = useState([]);
     const fetchLaptop = async () => {
         try {
-            const response = await apiGetProducts({ limit: 10, title: 'Điện thoại'});
+            const response = await apiGetProducts({ limit: 10, category: 'Laptop'});
             if (response?.success) {
                 setLaptop(response.Products);
             }

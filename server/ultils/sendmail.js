@@ -16,7 +16,7 @@ const sendMail = async (data) => {
   let info = await transporter.sendMail({
     from: '"abc" <no-reply@lytuanhung19122001@gmail.com>',
     to: data.email,
-    subject: "Forgot password",
+    subject: data.subject,
     html: data.html,
   });
 

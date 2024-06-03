@@ -1,15 +1,13 @@
 import React from 'react'
-import {Sidebar,Banner,Sidebarright, BestSeller,DealDaily, Dienthoai, Laptop, Tablet} from '../../components'
+import {Sidebar,Banner,Sidebarright, BestSeller,DealDaily, Dienthoai, Laptop, Camera} from '../../components'
 import {useSelector} from 'react-redux'
 import icons from '../../ultils/icons'
 const {IoIosArrowForward} = icons
 const Home = () =>{
 
     const {categories} = useSelector(state => state.app)
-    const {isLoggedIn, current} = useSelector(state => state.user)
-    console.log({isLoggedIn, current});
     return (
-        <div >
+        <div className='mt-4'>
             <div className='w-main flex pt-3'>
                 <div className='flex flex-col gap-5 w-[25%] '>
                     <div className='flex-auto border rounded-[10px] shadow-lg'>
@@ -42,17 +40,17 @@ const Home = () =>{
                     <Laptop/>
                 </div>
                 <div className='pt-6'>
-                    <Tablet/>
+                    <Camera/>
                 </div>
             </div>
             
-            <div className='p-4 my-4'>
+            <div className='w-main p-4 my-4'>
                 <h3 className='font-semibold flex text-gray-800 text-[30px] pb-4 border-b-2 border-main'>Hot Collections</h3>
                 <div className='flex flex-wrap'>
-                    {categories?.filter(el => el.brand.length > 0).map(el => (  
+                {categories?.filter(el => el.brand.length > 0).map((el, index) => (  
                         <div 
-                        key={el._id}
-                        className='w-[396px] p-4'
+                            key={el._id || index}
+                            className='w-[396px] p-4'
                         >
                             <div className='flex border min-h-[202px] pt-2'>
                                 <img src={el.image} alt='' className=' w-[160px] h-[170px] object-contain'/>
@@ -60,9 +58,9 @@ const Home = () =>{
                                     <h4 className='font-semibold uppercase'>{el.title}</h4>
                                     <ul className='text-sm pt-2'>
                                         {el?.brand?.map(item =>(
-                                            <span className='flex gap-1 items-center text-gray-500'>
+                                            <span key={item} className='flex gap-1 items-center text-gray-500'>
                                                 <IoIosArrowForward size={14}/>
-                                                <li key={item} > {item}</li>
+                                                <li> {item}</li>
                                             </span>
                                         ))}
                                     </ul>
@@ -72,9 +70,7 @@ const Home = () =>{
                     ))}
                 </div>
             </div>
-            <div className='p-4 my-4'>
-                <h3 className='font-semibold flex text-gray-800 text-[30px] pb-4 border-b-2 border-main'>BLOG POSTS</h3>
-            </div>
+            
         </div>
     )
 }

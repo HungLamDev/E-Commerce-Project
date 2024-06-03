@@ -4,8 +4,6 @@ import {createSlug} from '../ultils/helpers'
 import { useSelector } from 'react-redux'
 
 const Sidebar = () =>{
-
-
     // call api vào sidebar
     const {categories} = useSelector(state => state.app)
     // viết html

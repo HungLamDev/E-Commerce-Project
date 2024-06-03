@@ -4,11 +4,12 @@ const ctrls = require("../controllers/user");
 const { verifyAcccesToken, isAdmin } = require("../middlewares/verifyToken");
 
 router.post("/register", ctrls.register);
+router.put("/finalregister/:token", ctrls.finalRegister);
 router.post("/login", ctrls.login);
 router.get("/current", verifyAcccesToken, ctrls.getCurrent);
 router.post("/refreshtoken", ctrls.refreshAccessToken);
 router.get("/logout", ctrls.logout);
-router.get("/forgotpassword", ctrls.forgotPassword);
+router.post("/forgotpassword", ctrls.forgotPassword);
 router.put("/resetpassword", ctrls.resetPassword);
 router.get("/", [verifyAcccesToken, isAdmin], ctrls.getUsers);
 router.delete("/", [verifyAcccesToken, isAdmin], ctrls.deletesUser);

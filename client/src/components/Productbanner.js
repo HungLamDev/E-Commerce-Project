@@ -12,10 +12,8 @@ const Product = ({ productData}) => {
         setLiked(!liked); 
     };
     function customEncodeURIComponent(str) {
-        if (!str) return ''; 
-        return str.replace(/\s+/g, '%') 
-                  .replace(/\//g, '%2F');
-      }
+        return str.replace(/\//g, '%2F');
+    }
     const encodedTitle = customEncodeURIComponent(productData?.title);
     return (
         <div className='w-full text-base px-[10px] hover:text-black cursor-pointer border rounded-[15px]'>

@@ -8,6 +8,8 @@ const {
 const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
 const user = require("../models/user");
+const makeToken = require('uniqid');
+const { response } = require("express");
 
 // const register = asyncHandler(async (req, res) => {
 //   const { email, password, firstname, lastname } = req.body;
@@ -31,15 +33,47 @@ const user = require("../models/user");
 
 const register = asyncHandler(async (req, res) => {
   const { email, password, firstname, lastname, mobile } = req.body;
-  if (!email || !password || !firstname || !lastname, !mobile)
+  if (!email || !password || !firstname || !lastname || !mobile)
     return res.status(400).json({
       success: false,
       mes: "missing input",
     });
-  res.cookie('dataregister',req.body, {httpOnly: true, maxAge: 15*60*1000})
-  const html = `xin vui lòng click vào link dưới đây để hoàn tất quá trình đăng ký của bạn của bạn,Link này sẽ hết hạn sau 15 phút kể từ dât giờ...
-  <a href=${process.env.URL_SERVER}/api/user/rest-password/${resetToken}>Click here</a>`;
+  const user = await User.findOne({ email });
+  if (user) throw new Error("User has existed");
+  else {
+    const token = makeToken()
+    const emailedited = btoa(email) + '@' + token
+    const newUser = await User.create({
+      email: emailedited, password, firstname, lastname, mobile
+    })
+    
+    if( newUser){
+      const html = `<h2>Code is valid for 5 minutes</h2><br /><blockquote>${token} </blockquote>`
+      await sendMail({email, html, subject: ''})
+    }
+    setTimeout ( async () => { 
+      await User.deleteOne({email: emailedited})
+     },[300000])
+    return res.json({
+      success: newUser ? true : false,
+      mes: newUser ? "Please check your email to active account" : 'Some went wrong, please try later',
+    })
+  }
 });
+
+const finalRegister = asyncHandler(async (req, res) =>{
+  const { token } = req.params;
+  const notActiveEmail = await User.findOne({email: new RegExp(`${token}$`)})
+  if(notActiveEmail){
+    notActiveEmail.email = atob(notActiveEmail?.email?.split('@')[0])
+    notActiveEmail.save()
+  }
+  return res.json({
+    success: notActiveEmail ? true : false,
+    mes: notActiveEmail ? 'Register is successfully, please go login' : 'Some went wrong, please try later',
+  })
+});
+
 //refresh token => cấp mới token
 // access token xác thực phân quyền người dùng
 const login = asyncHandler(async (req, res) => {
@@ -136,16 +170,18 @@ const logout = asyncHandler(async (req, res) => {
 //check token có giống với token mà server gửi mail hay không
 //charge password
 const forgotPassword = asyncHandler(async (req, res) => {
-  const { email } = req.query;
+  const { email } = req.body;
   if (!email) throw new Error("Missing email");
   const user = await User.findOne({ email });
-  if (!user) throw new Error("user not found");
+  if (!user) throw new Error("User Not Exist!");
   const resetToken = user.createPasswordChangedToken();
   await user.save();
-  const html = `xin vui lòng click vào link dưới đây để thay đổi mật khẩu của bạn,Link này sẽ hết hạn sau 15 phút kể từ dât giờ...<a href=${process.env.URL_SERVER}/api/user/rest-password/${resetToken}>Click here</a>`;
+  const html = `xin vui lòng click vào link dưới đây để thay đổi mật khẩu của bạn,Link này sẽ hết hạn sau 15 phút kể từ bây giờ...
+  <a href=${process.env.CLIENT_URL}/reset-password/${resetToken}>Click here</a>`;
   const data = {
     email,
     html,
+    subject: 'Forgot Password'
   };
 
   try {
@@ -153,14 +189,14 @@ const forgotPassword = asyncHandler(async (req, res) => {
     console.log(rs);
     return res.status(200).json({
       success: true,
-      message: "Email sent successfully",
+      mes: "Please Check Email",
       rs,
     });
   } catch (error) {
     console.error("Error sending email:", error);
     return res.status(500).json({
       success: false,
-      message: "Error sending email",
+      mes: "Error sending email",
       error: error.message,
     });
   }
@@ -168,15 +204,12 @@ const forgotPassword = asyncHandler(async (req, res) => {
 const resetPassword = asyncHandler(async (req, res) => {
   const { password, token } = req.body;
   if (!password || !token) throw new Error("missing input");
-  const passwordResetToken = crypto
-    .createHash("sha256")
-    .update(token)
-    .digest("hex");
+  const passwordResetToken = crypto.createHash("sha256").update(token).digest("hex");
   const user = await User.findOne({
     passwordResetToken,
     passwordResetExpires: { $gt: Date.now() },
   });
-  if (!user) throw new Error("invalid reset token");
+  if (!user) throw new Error("Token expired");
   user.password = password;
   user.passwordResetToken = undefined;
   user.passwordChangeAt = Date.now();
@@ -303,4 +336,6 @@ module.exports = {
   updateUserByAdnin,
   updateUserByAddress,
   updateCart,
+  asyncHandler,
+  finalRegister
 };

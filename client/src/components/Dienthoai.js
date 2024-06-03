@@ -8,6 +8,7 @@ const Dienthoai = () => {
     const fetchDienthoai = async () => {
         try {
             const response = await apiGetProducts({ limit: 10, title: 'Điện Thoại' });
+            console.log(response);
             if (response?.success) {
                 setDienthoai(response.Products);
             }
@@ -30,7 +31,6 @@ const Dienthoai = () => {
                             key={product.id}
                             pid={product.id}
                             productData={product}
-                            isNew={false}
                         />
                     </div>
                 ))}

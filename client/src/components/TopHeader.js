@@ -1,12 +1,35 @@
-import React, { memo } from 'react'
+import React, { memo, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import path from '../ultils/path'
+import { getCurrent } from '../store/user/asyncActions'
+import { useDispatch,useSelector } from 'react-redux'
+import icons from '../ultils/icons'
+import { logout } from '../store/user/userSlice'
+
+const {AiOutlineLogout} = icons
 const TopHeader = () => {
+  const dispatch = useDispatch()
+  const {isLoggedIn, current} = useSelector(state => state.user);
+  useEffect(() => {
+    if (isLoggedIn) {
+      dispatch(getCurrent());
+    }
+  }, [dispatch, isLoggedIn]);
+  
   return (
     <div className='h-[45px] w-full bg-orange-600 flex items-center justify-center'>
       <div className='w-main flex justify-between text-slate-50'>
         <span>ORDER ONLINE OR CALL US (+1800) 000 8808</span>
-        <Link className='hover:text-gray-800' to={`/${path.LOGIN}`}>Sign In or Create Account</Link>
+        {isLoggedIn ? 
+        <div className='flex gap-2 items-center'>
+          <span>{`Welcome, ${current?.lastname} ${current?.firstname}`}</span>
+          <span 
+          onClick={() => dispatch(logout())}
+          className='hover:rounded-full hover:bg-gray-300 hover:text-main cursor-pointer p-2'>
+            < AiOutlineLogout size={18}/>
+          </span>
+        </div>
+        : <Link className='hover:text-gray-800' to={`/${path.LOGIN}`}>Sign In or Create Account</Link>}
       </div>
     </div>
   )
