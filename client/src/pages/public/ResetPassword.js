@@ -1,14 +1,16 @@
 import React,{useState} from 'react'
 import { Button } from '../../components'
-import { useParams } from 'react-router-dom'
+import { useParams, Link } from 'react-router-dom'
 import { apiResetPassword } from '../../apis'
 import { toast } from 'react-toastify'
+import path from '../../ultils/path'
 const ResetPassword = () => {
   const [password, setpassword] = useState('')
   const {token} = useParams()
   const handleResetPassword = async () =>{
     console.log({ password, token });
     const response = await apiResetPassword({ password, token });
+    console.log(response);
     if(response.success){
       toast.success(response.mes, {theme: 'colored'})
     }else toast.info(response.mes, {theme: 'colored'})
@@ -21,7 +23,7 @@ const ResetPassword = () => {
           type='text'
           id='password'
           className='w-[800px] h-[50px] pb-2 border-b outline-none placeholder:text-[15px]'
-          placeholder='Type here'
+          placeholder='Ex: abcd@'
           value={password}
           onChange={e=>setpassword(e.target.value)}
           />
@@ -31,6 +33,12 @@ const ResetPassword = () => {
                   handleOnclick={handleResetPassword}
                   style='px-4 py-2 rounded-md text-white bg-blue-500 my-2 text-semibold'
               />
+              <Link to={`/${path.LOGIN}`} >
+                <Button 
+                    name='Back'
+                    style='px-4 py-2 rounded-md text-white bg-red-500 my-2 text-semibold '
+                />
+              </Link>
           </div>
       </div>
   </div>
