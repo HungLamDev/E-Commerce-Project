@@ -53,7 +53,6 @@ const Login = () => {
     const handlesubmit = useCallback(async () => {
         const { firstname, lastname, mobile, ...data } = payload;
         const invalids = isRegister ? validate(payload, setInvalidFields) : validate(data, setInvalidFields)
-        console.log(invalids);
         if(invalids === 0){
             if (isRegister) {
             const response = await apiRegister(payload);

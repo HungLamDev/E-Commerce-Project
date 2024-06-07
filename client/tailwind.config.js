@@ -45,8 +45,16 @@ module.exports = {
         'slide-right': 'slide-right 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both' // Sửa lại tên keyframe và loại bỏ dấu chấm phẩy
       }
     },
+    listStyleType: {
+      none: 'none',
+      disc: 'disc',
+      decimal: 'decimal',
+      square: 'square',
+      roman: 'upper-roman',
+    },
   },
   plugins: [
-    "@tailwindcss/line-clamp"
+    require("@tailwindcss/line-clamp"),
+    require("@tailwindcss/forms")
   ],
 };

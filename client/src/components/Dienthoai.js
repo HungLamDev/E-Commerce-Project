@@ -7,8 +7,7 @@ const Dienthoai = () => {
 
     const fetchDienthoai = async () => {
         try {
-            const response = await apiGetProducts({ limit: 10, title: 'Điện Thoại' });
-            console.log(response);
+            const response = await apiGetProducts({ limit: 10, title: 'Điện Thoại' })
             if (response?.success) {
                 setDienthoai(response.Products);
             }

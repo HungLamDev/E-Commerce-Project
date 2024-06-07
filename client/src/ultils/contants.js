@@ -27,3 +27,35 @@ export const navigation =[
         path: `/${path.FAQ}`
     },
 ]
+export const colors = [
+    'black',
+    'white',
+    'Yellow',
+    'Gold',
+    'Blue'
+
+]
+export const sorts = [
+    {
+        id: 1,
+        value: '-sold',
+        text: 'Best selling'
+    },
+    {
+        id: 2,
+        value: '-price',
+        text: 'Price, High to Low'
+    },
+    {
+        id: 3,
+        value: 'price',
+        text: 'Price, Low to High'
+    },
+    {
+        id: 4,
+        value: '-createdAt',
+        text: 'New update'
+    },
+   
+
+]

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { apiGetProducts } from '../apis/product';
-import Product from './Productbanner';
+import Productbanner from './Productbanner';
 
 const Laptop = () => {
     const [Laptop, setLaptop] = useState([]);
@@ -26,7 +26,7 @@ const Laptop = () => {
             <div className='mt-4 mx-[-10px] flex flex-wrap'>
                 {Laptop?.map((product, index) => (
                     <div key={index} className='w-1/5 px-2 mb-4'>
-                        <Product
+                        <Productbanner
                             key={product.id}
                             pid={product.id}
                             productData={product}

@@ -59,9 +59,18 @@ const getProducts = asyncHandler(async (req, res) => {
   );
   const formatedQueries = JSON.parse(queryString);
   //Lọc - Filtering
-  if (queries?.title)
-    formatedQueries.title = { $regex: queries.title, $options: "i" };
-  let queryCommand = Product.find(formatedQueries);
+  let colorQueryObject = {};
+// Filtering
+  if (queries?.title) formatedQueries.title = { $regex: queries.title, $options: 'i' };
+  if (queries?.category) formatedQueries.category = { $regex: queries.category, $options: 'i' };
+  if (queries?.color) {
+    delete formatedQueries.color;
+    const colorArr = queries.color?.split(',');
+    const colorQuery = colorArr.map(el => ({ color : {$regex: el, $options: 'i'}}));
+    colorQueryObject = { $or: colorQuery };
+  }
+  const q = { ...colorQueryObject, ...formatedQueries };
+  let queryCommand = Product.find(q);
   //Sorting
   //acb,efg => [abc,efg] => abc efg
   if (req.query.sort) {
@@ -85,7 +94,7 @@ const getProducts = asyncHandler(async (req, res) => {
   // trả vêd số lượng sp thỏa mản điều kiện !== sô lượng sp trả về 1 lần gọi api
   try {
     const response = await queryCommand;
-    const counts = await Product.countDocuments(formatedQueries);
+    const counts = await Product.find(q).countDocuments()
 
     return res.status(200).json({
       success: response ? true : false,
@@ -95,6 +104,7 @@ const getProducts = asyncHandler(async (req, res) => {
   } catch (err) {
     return res.status(500).json({ success: false, error: err.message });
   }
+
 });
 
 const updateProduct = asyncHandler(async (req, res) => {

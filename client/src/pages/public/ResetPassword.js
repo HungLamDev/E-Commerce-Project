@@ -1,8 +1,9 @@
 import React,{useState} from 'react'
 import { Button } from '../../components'
-import { useParams } from 'react-router-dom'
+import { useParams, Link } from 'react-router-dom'
 import { apiResetPassword } from '../../apis'
 import { toast } from 'react-toastify'
+import path from '../../ultils/path'
 const ResetPassword = () => {
   const [password, setpassword] = useState('')
   const {token} = useParams()
@@ -32,6 +33,12 @@ const ResetPassword = () => {
                   handleOnclick={handleResetPassword}
                   style='px-4 py-2 rounded-md text-white bg-blue-500 my-2 text-semibold'
               />
+              <Link to={`/${path.LOGIN}`} >
+                <Button 
+                    name='Back'
+                    style='px-4 py-2 rounded-md text-white bg-red-500 my-2 text-semibold '
+                />
+              </Link>
           </div>
       </div>
   </div>

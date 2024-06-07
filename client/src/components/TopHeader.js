@@ -11,17 +11,18 @@ const TopHeader = () => {
   const dispatch = useDispatch()
   const {isLoggedIn, current} = useSelector(state => state.user);
   useEffect(() => {
+    console.log(isLoggedIn);
     if (isLoggedIn) {
       dispatch(getCurrent());
     }
   }, [dispatch, isLoggedIn]);
   
   return (
-    <div className='h-[45px] w-full bg-orange-600 flex items-center justify-center'>
+    <div className='h-[45px] w-full bg-orange-600 flex items-center justify-center m-auto'>
       <div className='w-main flex justify-between text-slate-50'>
         <span>ORDER ONLINE OR CALL US (+1800) 000 8808</span>
-        {isLoggedIn ? 
-        <div className='flex gap-2 items-center'>
+        {isLoggedIn && current
+        ?<div className='flex gap-2 items-center'>
           <span>{`Welcome, ${current?.lastname} ${current?.firstname}`}</span>
           <span 
           onClick={() => dispatch(logout())}

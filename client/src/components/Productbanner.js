@@ -24,7 +24,7 @@ const Product = ({ productData}) => {
                     <img src={productData?.images[0] || ''} alt='' className='w-[180px] h-[180px] object-cover' />
                 </div>
                 <div className='flex flex-col gap-2 items-center justify-center mt-[15px] pb-2'>
-                    <span className='line-clamp-2 text-sm'>
+                    <span className='line-clamp-1 text-sm'>
                         {productData?.title}
                     </span>
                     <span className='text-sm'>

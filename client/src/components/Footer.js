@@ -13,7 +13,7 @@ const Footer = () => {
           </div>
           <div className='flex-1 flex items-center'>
             <input 
-            className='w-full rounded-l-[30px] p-2 h-[50px] bg-[#e36e3b] outline-none text-gray-100 placeholder:text-gray-200 placeholder:text-[15px] placeholder:opacity-50 '
+            className='w-full border-none rounded-l-[30px] p-2 h-[50px] bg-[#e36e3b] outline-none text-gray-100 placeholder:text-gray-200 placeholder:text-[15px] placeholder:opacity-50 '
             type="text"
             placeholder='Email address'/>
             <div className='h-[50px] w-[56px] bg-[#e36e3b] p-2 rounded-r-[30px] flex items-center justify-center'>
