@@ -8,8 +8,9 @@ const {
 const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
 const user = require("../models/user");
-const makeToken = require('uniqid');
+const makeToken = require("uniqid");
 const { response } = require("express");
+const { users } = require("../ultils/constant");
 
 // const register = asyncHandler(async (req, res) => {
 //   const { email, password, firstname, lastname } = req.body;
@@ -41,37 +42,45 @@ const register = asyncHandler(async (req, res) => {
   const user = await User.findOne({ email });
   if (user) throw new Error("User has existed");
   else {
-    const token = makeToken()
-    const emailedited = btoa(email) + '@' + token
+    const token = makeToken();
+    const emailedited = btoa(email) + "@" + token;
     const newUser = await User.create({
-      email: emailedited, password, firstname, lastname, mobile
-    })
-    
-    if( newUser){
-      const html = `<h2>Code is valid for 5 minutes</h2><br /><blockquote>${token} </blockquote>`
-      await sendMail({email, html, subject: ''})
+      email: emailedited,
+      password,
+      firstname,
+      lastname,
+      mobile,
+    });
+
+    if (newUser) {
+      const html = `<h2>Code is valid for 5 minutes</h2><br /><blockquote>${token} </blockquote>`;
+      await sendMail({ email, html, subject: "" });
     }
-    setTimeout ( async () => { 
-      await User.deleteOne({email: emailedited})
-     },[300000])
+    setTimeout(async () => {
+      await User.deleteOne({ email: emailedited });
+    }, [300000]);
     return res.json({
       success: newUser ? true : false,
-      mes: newUser ? "Please check your email to active account" : 'Some went wrong, please try later',
-    })
+      mes: newUser
+        ? "Please check your email to active account"
+        : "Some went wrong, please try later",
+    });
   }
 });
 
-const finalRegister = asyncHandler(async (req, res) =>{
+const finalRegister = asyncHandler(async (req, res) => {
   const { token } = req.params;
-  const notActiveEmail = await User.findOne({email: new RegExp(`${token}$`)})
-  if(notActiveEmail){
-    notActiveEmail.email = atob(notActiveEmail?.email?.split('@')[0])
-    notActiveEmail.save()
+  const notActiveEmail = await User.findOne({ email: new RegExp(`${token}$`) });
+  if (notActiveEmail) {
+    notActiveEmail.email = atob(notActiveEmail?.email?.split("@")[0]);
+    notActiveEmail.save();
   }
   return res.json({
     success: notActiveEmail ? true : false,
-    mes: notActiveEmail ? 'Register is successfully, please go login' : 'Some went wrong, please try later',
-  })
+    mes: notActiveEmail
+      ? "Register is successfully, please go login"
+      : "Some went wrong, please try later",
+  });
 });
 
 //refresh token => cấp mới token
@@ -117,7 +126,7 @@ const login = asyncHandler(async (req, res) => {
 });
 const getCurrent = asyncHandler(async (req, res) => {
   const { _id } = req.user;
-  const user = await User.findById(_id).select("-refreshtoken -password -role");
+  const user = await User.findById(_id).select("-refreshtoken -password ");
   return res.status(200).json({
     success: user ? true : false,
     rs: user ? user : "user not found",
@@ -181,7 +190,7 @@ const forgotPassword = asyncHandler(async (req, res) => {
   const data = {
     email,
     html,
-    subject: 'Forgot Password'
+    subject: "Forgot Password",
   };
 
   try {
@@ -204,7 +213,10 @@ const forgotPassword = asyncHandler(async (req, res) => {
 const resetPassword = asyncHandler(async (req, res) => {
   const { password, token } = req.body;
   if (!password || !token) throw new Error("missing input");
-  const passwordResetToken = crypto.createHash("sha256").update(token).digest("hex");
+  const passwordResetToken = crypto
+    .createHash("sha256")
+    .update(token)
+    .digest("hex");
   const user = await User.findOne({
     passwordResetToken,
     passwordResetExpires: { $gt: Date.now() },
@@ -221,11 +233,70 @@ const resetPassword = asyncHandler(async (req, res) => {
   });
 });
 const getUsers = asyncHandler(async (req, res) => {
-  const response = await User.find().select("-refreshtoken -password -role");
-  return res.status(200).json({
-    success: response ? true : false,
-    user: response,
-  });
+  const queries = { ...req.query };
+
+  // Tách các trường đặc biệt ra khỏi query
+  const excludeFields = ["limit", "sort", "page", "fields"];
+  excludeFields.forEach((el) => delete queries[el]);
+
+  // Format lại các operators cho đún cú pháp mongoose
+  let queryString = JSON.stringify(queries);
+  queryString = queryString.replace(
+    /\b(gte|gt|lt|lte)\b/g,
+    (matchedEl) => `$${matchedEl}`
+  );
+  const formatedQueries = JSON.parse(queryString);
+
+  // Filtering
+  if (queries?.name)
+    formatedQueries.name = { $regex: queries.name, $options: "i" };
+  if (req.query.q) {
+    delete formatedQueries.q;
+    formatedQueries["$or"] = [
+      { firstname: { $regex: req.query.q, $options: "i" } },
+      { lastname: { $regex: req.query.q, $options: "i" } },
+      { email: { $regex: req.query.q, $options: "i" } },
+    ];
+  }
+
+  let queryCommand = User.find(formatedQueries);
+
+  // Sorting
+  if (req.query.sort) {
+    const sortBy = req.query.sort.split(",").join(" ");
+    queryCommand = queryCommand.sort(sortBy);
+  }
+
+  // Fields limiting
+  if (req.query.fields) {
+    const fields = req.query.fields.split(",").join(" ");
+    queryCommand = queryCommand.select(fields);
+  }
+
+  // Pagination
+  // limit: số object lấy về 1 lần gọi api
+  // skip: bỏ phần tử
+  const page = +req.query.page || 1;
+  const limit = +req.query.limit || process.env.LIMIT_PRODUCTS;
+  const skip = (page - 1) * limit;
+  queryCommand.skip(skip).limit(limit);
+
+  // Execute query
+  // Số lượng sp thỏa mãn đk !== số lượng sp trả về một lần api
+
+  queryCommand
+    .then(async (response) => {
+      const counts = await User.find(formatedQueries).countDocuments();
+
+      return res.status(200).json({
+        success: response ? true : false,
+        counts,
+        users: response ? response : "Cannot get products",
+      });
+    })
+    .catch((err) => {
+      if (err) throw new Error(err.message);
+    });
 });
 const deletesUser = asyncHandler(async (req, res) => {
   const { _id } = req.query;
@@ -322,6 +393,13 @@ const updateCart = asyncHandler(async (req, res) => {
     });
   }
 });
+const createUsers = asyncHandler(async (req, res) => {
+  const response = await User.create(users);
+  return res.status(200).json({
+    success: response ? true : false,
+    users: response ? response : "Something went wrong",
+  });
+});
 module.exports = {
   register,
   login,
@@ -337,5 +415,6 @@ module.exports = {
   updateUserByAddress,
   updateCart,
   asyncHandler,
-  finalRegister
+  finalRegister,
+  createUsers,
 };
