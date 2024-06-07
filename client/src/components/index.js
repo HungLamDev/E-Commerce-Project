@@ -22,3 +22,7 @@ export { default as AdminSidebar } from "./SideBar/AdminSidebar";
 export { default as Pagination } from "./pagination/Pagination";
 export { default as PagiItem } from "./pagination/PagiItem";
 export { default as Select } from "./inputs/Select";
+export { default as SearchItem } from "./search/SearchItem";
+export { default as InputSelect } from "./inputs/InputSelect";
+export { default as Breadcrumb } from "./Commons/Breadcrumb";
+export { default as SelectQuantity } from "./Commons/SelectQuantity";
