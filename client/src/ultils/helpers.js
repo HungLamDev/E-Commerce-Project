@@ -25,31 +25,31 @@ export const validate = ( payload, setInvalidField ) => {
             setInvalidField(prev => [...prev, {name: array[0], mes: 'Require this field'}])
         }
     }
-    // for (let array of formatPayload){
-    //     switch (array[0]) {
-    //         case 'email':
-    //             const regex = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-    //             if(!array[1].match(regex)){
-    //                 invalids++
-    //                 setInvalidField(prev => [...prev, {name: array[0], mes: 'Email invalid'}])
-    //             }
-    //             break;
-    //             case 'password':
-    //             if(array[1].length < 6){
-    //                 invalids++
-    //                 setInvalidField(prev => [...prev, {name: array[0], mes: 'Password minimum 6 charater'}])
-    //             }
-    //             break;
-    //             case 'mobile':
-    //             if(array[1].length <= 9 || array[1].length >= 11 ){
-    //                 invalids++
-    //                 setInvalidField(prev => [...prev, {name: array[0], mes: 'Mobile number must be 10 characters'}])
-    //             }
-    //             break;
+    for (let array of formatPayload){
+        switch (array[0]) {
+            case 'email':
+                const regex = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+                if(!array[1].match(regex)){
+                    invalids++
+                    setInvalidField(prev => [...prev, {name: array[0], mes: 'Email Invalid a@gmail.com'}])
+                }
+                break;
+                case 'password':
+                if(array[1].length < 6){
+                    invalids++
+                    setInvalidField(prev => [...prev, {name: array[0], mes: 'Password minimum 6 charater'}])
+                }
+                break;
+                case 'mobile':
+                if(array[1].length <= 9 || array[1].length >= 11 ){
+                    invalids++
+                    setInvalidField(prev => [...prev, {name: array[0], mes: 'Mobile number must be 10 characters'}])
+                }
+                break;
         
-    //         default:
-    //             break;
-    //     }
-    // }
+            default:
+                break;
+        }
+    }
     return invalids
 }

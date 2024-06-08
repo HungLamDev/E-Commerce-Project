@@ -18,39 +18,40 @@ var settings = {
 const DetailProduct = () => {
   const { pid, title } = useParams();
   const [product, setProduct] = useState(null);
-  const [quantity, setQuantity] = useState(1)
-  const [currentImage, setcurrentImage] = useState(null)
+  const [quantity, setQuantity] = useState(1);
+  const [currentImage, setCurrentImage] = useState(null);
+
   const fetchProductData = async () => {
     const response = await apiGetproduct(pid);
     if (response.success) {
       setProduct(response.Product);
-      setcurrentImage(response?.Product?.images)
+      setCurrentImage(response?.Product?.images[0]);  // Set currentImage to the first image
     }
   };
 
   useEffect(() => {
     if (pid) fetchProductData();
-    console.log(pid);
   }, [pid]);
 
-  const handleQuantity = useCallback((number) =>{
-    if(!Number(number) || Number(number) < 1) {
-      return
-    }else {
-      setQuantity(number)
+  const handleQuantity = useCallback((number) => {
+    if (!Number(number) || Number(number) < 1) {
+      return;
+    } else {
+      setQuantity(number);
     }
-    
-  },[quantity]) 
-  const handleChangeQuantity = useCallback((flag) =>{
-    if (flag === 'minus' && quantity === 1) return
-    if (flag === 'minus') setQuantity( prev => + prev - 1)
-    if (flag === 'plus') setQuantity( prev => + prev + 1)
-  },[quantity]) 
+  }, [quantity]);
 
-  const handleClickImage = (e,el) => { 
-    e.stopPropagation()
-    setcurrentImage(el)
-   }
+  const handleChangeQuantity = useCallback((flag) => {
+    if (flag === 'minus' && quantity === 1) return;
+    if (flag === 'minus') setQuantity(prev => prev - 1);
+    if (flag === 'plus') setQuantity(prev => prev + 1);
+  }, [quantity]);
+
+  const handleClickImage = (e, el) => {
+    e.stopPropagation();
+    setCurrentImage(el);  // Set the clicked image URL to currentImage
+  };
+
   return (
     <div className='w-full pt-2'>
       <div className='h-[81px] flex items-center justify-center bg-gray-100'>
@@ -65,24 +66,23 @@ const DetailProduct = () => {
             <div className='flex-col gap-4 w-2/5'>
               <div className='h-[458px] w-[458px] border'>
                 <ReactImageMagnify {...{
-                    smallImage: {
-                        alt: '',
-                        isFluidWidth: true,
-                        src: currentImage
-                    },
-                    largeImage: {
-                        src: currentImage,
-                        width: 800,
-                        height: 1200,
-                        
-                    }
+                  smallImage: {
+                    alt: '',
+                    isFluidWidth: true,
+                    src: currentImage  // Use currentImage as the source
+                  },
+                  largeImage: {
+                    src: currentImage,  // Use currentImage as the source
+                    width: 800,
+                    height: 1200,
+                  }
                 }} />
               </div>
               <div className='w-[458px] mt-4'>
                 <Slider {...settings}>
-                  {product?.images?.map(el =>(
+                  {product?.images?.map(el => (
                     <div className='flex w-full justify-around flex-col'>
-                      <img onClick={e => handleClickImage(e, el)}  src={el} alt='sub-product' className='h-[160px] w-[144px] object-cover border-gray-300 border rounded-[5px] cursor-pointer'/>
+                      <img onClick={e => handleClickImage(e, el)} src={el} alt='sub-product' className='h-[160px] w-[144px] object-cover border-gray-300 border rounded-[5px] cursor-pointer' />
                     </div>
                   ))}
                 </Slider>
@@ -92,7 +92,7 @@ const DetailProduct = () => {
               <h1 className='text-[25px] font-semibold text-red-500'>{`${formatMoney(product?.price)} VND`}</h1>
               <h2 className='p-4 text-[18px] font-medium'>Thông tin sản phẩm</h2>
               <ul className='list-square text-sm text-gray-500 pl-8'>
-                {product?.description?.map(el =>(<li key={el}>{el}</li>))}
+                {product?.description?.map(el => (<li key={el}>{el}</li>))}
               </ul>
               <div className='text-sm flex flex-col gap-8'>
                 <SelectQuantity quantity={quantity} handleQuantity={handleQuantity} handleChangeQuantity={handleChangeQuantity} />
@@ -101,7 +101,7 @@ const DetailProduct = () => {
                 </Button>
               </div>
             </div>
-            <div className='w-1/3'>
+            <div className='w-1/4'>
             </div>
           </>
         )}

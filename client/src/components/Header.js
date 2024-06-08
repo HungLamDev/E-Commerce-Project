@@ -15,15 +15,15 @@ const Header = () =>{
                 <div className='flex flex-col items-center px-6 border-r text-[13px]'>
                     <span className='flex gap-4 items-center'>
                         <BsTelephone color='orange'/>
-                        <span className='font-semibold'>(+1800) 000 8808</span>
+                        <span className='font-semibold'>(+84) 337 525 557</span>
                     </span>
                     <span>Mon-Sat 9:00AM - 8:00PM</span>
                 </div>
                 <div className='flex flex-col items-center px-6 border-r text-[13px]'>
-                    <span className='flex gap-4 items-center'>
-                        <TfiEmail color='orange'/>
-                        <span className='font-semibold'>SUPPORT@TADATHEMES.COM</span>
-                    </span>
+                <span className='flex gap-4 items-center'>
+                    <TfiEmail color='orange' />
+                    <a href="mailto:doandangkhoa0711.gr@gmail.com" className='font-semibold'>doandangkhoa0711.gr@gmail.com</a>
+                </span>
                     <span>Online Support 24/7</span>
                 </div>
                 <div className='cursor-pointer flex items-center justify-center gap-2 px-6 border-r'>
