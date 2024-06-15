@@ -7,7 +7,7 @@ const Home = () =>{
 
     const {categories} = useSelector(state => state.app)
     return (
-        <div className='mt-4'>
+        <div className='mt-4 w-main'>
             <div className='w-main flex pt-3'>
                 <div className='flex flex-col gap-5 w-[25%] '>
                     <div className='flex-auto border rounded-[10px] shadow-lg'>

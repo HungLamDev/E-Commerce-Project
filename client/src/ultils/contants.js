@@ -1,3 +1,4 @@
+import icons from "./icons"
 import path from "./path"
 export const navigation =[
     {
@@ -32,7 +33,8 @@ export const colors = [
     'white',
     'Yellow',
     'Gold',
-    'Blue'
+    'Blue',
+    'Pink'
 
 ]
 export const sorts = [
@@ -59,3 +61,65 @@ export const sorts = [
    
 
 ]
+export const VoteOptions =[
+    {
+        "id": 1,
+        "text": "Rất tệ"
+    },
+    {
+        "id": 2,
+        "text": "Tệ"
+    },
+    {
+        "id": 3,
+        "text": "Vừa"
+    },
+    {
+        "id": 4,
+        "text": "Tốt"
+    },
+    {
+        "id": 5,
+        "text": "Tuyệt"
+    }
+]
+const { MdOutlineDashboardCustomize,FaRegUserCircle,AiOutlineProduct,RiBillLine} = icons
+export const AdminSidebars = [
+    {
+        id: 1,
+        type: 'SINGLE',
+        text: "Dashboard",
+        path: `/${path.ADMIN}/${path.DASHBOARD}`,
+        icon: <MdOutlineDashboardCustomize size={20}/>
+    },
+    {
+        id: 2,
+        type: 'SINGLE',
+        text: "Manager User",
+        path: `/${path.ADMIN}/${path.MANAGE_USER}`,
+        icon: <FaRegUserCircle size={20}/>
+    },
+    {
+        id: 3,
+        type: 'PARENT',
+        text: "Products Management", // Changed to ensure uniqueness
+        icon: <AiOutlineProduct size={20}/>,
+        submenu: [
+            {
+                text: 'Create Product',
+                path: `/${path.ADMIN}/${path.CREATE_PRODUCTS}`,
+            },
+            {
+                text: 'Manage Products', // Changed to ensure uniqueness
+                path: `/${path.ADMIN}/${path.MANAGE_PRODUCTS}`,
+            },
+        ]
+    },
+    {
+        id: 4,
+        type: 'SINGLE',
+        text: "Manager Orders",
+        path: `/${path.ADMIN}/${path.MANAGE_ORDER}`,
+        icon: <RiBillLine size={20}/>
+    },
+];

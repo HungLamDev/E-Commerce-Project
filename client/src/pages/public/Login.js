@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect } from 'react';
 import { InputField, Button } from '../../components';
+import {Loading} from 'components'
 import { useState } from 'react';
 import { apiRegister, apiLogin, apiForgotPassword, apiFinalRegister } from '../../apis';
 import Swal from 'sweetalert2';
@@ -10,7 +11,7 @@ import { useDispatch } from 'react-redux';
 import { toast } from 'react-toastify';
 import { validate } from '../../ultils/helpers';
 import icons from '../../ultils/icons'
-
+import { showModal } from '../../store/appSlice'
 const {AiOutlineClose } = icons
 const Login = () => {
     const navigate = useNavigate()
@@ -55,8 +56,9 @@ const Login = () => {
         const invalids = isRegister ? validate(payload, setInvalidFields) : validate(data, setInvalidFields)
         if(invalids === 0){
             if (isRegister) {
+            dispatch(showModal({isShowModal: true, modalChildren: <Loading/>}))
             const response = await apiRegister(payload);
-            console.log(response);
+            dispatch(showModal({isShowModal: false, modalChildren: null}))
             if(response.success){
                 setIsVertifiedEmail(true)
             }else{
@@ -93,7 +95,7 @@ const Login = () => {
         <div className='w-screen h-screen relative'>
             {isVertifiedEmail && <div className='absolute animate-slide-right top-0 left-0 bottom-0 right-0 bg-overlay flex justify-center py-8 z-50 items-center '>
                 <div className='bg-white w-[500px]  rounded-md p-8'>
-                        <h4 className='pb-3'>Your enter code:</h4>
+                        <h4 className='pb-3'>Please enter code from email</h4>
                         <input 
                         type='text'
                         value={token}
@@ -106,6 +108,13 @@ const Login = () => {
                         onClick={finalRegister}
                         >
                             submit
+                        </button>
+                        <button className='px-4 py-2 bg-red-500 font-semibold text-white rounded-md ml-4'>
+                            <Link 
+                            to={`/${path.Login}`}
+                            >
+                                Cance
+                            </Link>
                         </button>
                 </div>
             </div>}

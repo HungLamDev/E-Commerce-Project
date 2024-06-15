@@ -2,7 +2,16 @@ import { configureStore, getDefaultMiddleware } from '@reduxjs/toolkit';
 import appSlice from './appSlice';
 import userSlice from './user/userSlice';
 import storage from 'redux-persist/lib/storage';
-import { persistReducer, persistStore } from 'redux-persist';
+import {
+  persistStore,
+  persistReducer,
+  FLUSH,
+  REHYDRATE,
+  PAUSE,
+  PERSIST,
+  PURGE,
+  REGISTER,
+}from 'redux-persist'
 
 // Common configuration for redux-persist
 const commonConfig = {
@@ -13,7 +22,7 @@ const commonConfig = {
 // Specific configuration for the user slice
 const userConfig = {
   ...commonConfig,
-  whitelist: ['isLoggedIn', 'token']
+  whitelist: ['isLoggedIn', 'token', 'current']
 };
 
 // Create a persisted reducer for the user slice
@@ -25,11 +34,12 @@ const store = configureStore({
     app: appSlice,
     user: persistedReducer
   },
-  middleware: getDefaultMiddleware({
-    serializableCheck: {
-      ignoredActions: ['persist/PERSIST', 'persist/REHYDRATE']
-    },
-  }),
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: {
+        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+      },
+    }),
 });
 
 // Create the persistor

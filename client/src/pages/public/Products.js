@@ -1,10 +1,11 @@
-import React, { useEffect, useState,useCallback } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useParams, useSearchParams, useNavigate, createSearchParams } from 'react-router-dom';
-import { Breadcrumb, SearchItem, InputSelect} from '../../components';
+import { Breadcrumb, SearchItem, InputSelect } from '../../components';
 import { apiGetProducts } from '../../apis';
 import Masonry from 'react-masonry-css';
-import Product from '../../components/Product';
+import Product from '../../components/products/Product';
 import { sorts } from '../../ultils/contants';
+import Pagination from '../../components/Pagination/Pagination';
 
 const breakpointColumnsObj = {
   default: 4,
@@ -12,17 +13,18 @@ const breakpointColumnsObj = {
   700: 2,
   500: 1,
 };
+
 const Products = () => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const [products, setProducts] = useState(null);
   const { category } = useParams();
   const [searchParams] = useSearchParams();
   const [activeClick, setActiveClick] = useState(null);
-  const [sort, setSort] = useState('')
-
+  const [sort, setSort] = useState('');
+  
   const fetchProductsByCategory = async (queries) => {
-    const response = await apiGetProducts({...queries, category: category});
-    if (response.success) setProducts(response.Products);
+    const response = await apiGetProducts(queries); // { ...queries, category: category }
+    if (response.success) setProducts(response);
   };
 
   useEffect(() => {
@@ -37,32 +39,38 @@ const Products = () => {
         {price: {lte: queries.to}}
       ]}
       delete queries.price
-    }
-    if(queries.from){queries.price = {gte: queries.from}}
-    if(queries.to){queries.price = {lte: queries.to}}
+     }else{
+      if(queries.from){queries.price = {gte: queries.from}}
+      if(queries.to){queries.price = {lte: queries.to}}
+      }
+    
     delete queries.from
     delete queries.to
     
     
     const a = {...priceQuery, ...queries}
     fetchProductsByCategory(a);
+    window.scrollTo(0,0)
   }, [searchParams]);
+
   const changeActiveClick = useCallback((name) => {
-    if(activeClick === name) setActiveClick(null)
-    else setActiveClick(name)
+    if (activeClick === name) setActiveClick(null);
+    else setActiveClick(name);
   }, [activeClick]);
 
-  const changeValue = useCallback ((value) => { 
-    setSort(value)
-  },[sort])
+  const changeValue = useCallback((value) => {
+    setSort(value);
+  }, [sort]);
 
   useEffect(() => {
-    navigate({
-      pathname:  `/${category}`,
-      search: createSearchParams({sort}).toString()
-    });
-  }, [sort])
-  
+    if(sort) {
+      navigate({
+        pathname: `/${category}`,
+        search: createSearchParams({ sort }).toString()
+      });
+    }
+  }, [sort]);
+
   return (
     <div className='w-full'>
       <div className='h-[81px] flex items-center justify-center bg-gray-100'>
@@ -72,30 +80,28 @@ const Products = () => {
         </div>
       </div>
       <div className='w-main border p-4 flex justify-between mt-8 m-auto'>
-          <div className='w-4/5 flex-auto flex-col flex'>
-            <span className='uppercase font-semibold'> Fillter By</span>
-            <div className='flex items-center gap-4 pt-2'>
-              <SearchItem
-                name='Price'
-                activeClick={activeClick}
-                changeActiveClick={changeActiveClick}
-                type = 'input'
-              />
-              <SearchItem
-                name='Color'
-                activeClick={activeClick}
-                changeActiveClick={changeActiveClick}
-                
-              />
-            </div>
+        <div className='w-4/5 flex-auto flex-col flex'>
+          <span className='uppercase font-semibold'>Filter By</span>
+          <div className='flex items-center gap-4 pt-2'>
+            <SearchItem
+              name='Price'
+              activeClick={activeClick}
+              changeActiveClick={changeActiveClick}
+              type='input'
+            />
+            <SearchItem
+              name='Color'
+              activeClick={activeClick}
+              changeActiveClick={changeActiveClick}
+            />
           </div>
-          <div className='w-1/5 flex flex-col'>
-            <span className='uppercase font-semibold'> Sort By</span>
-            <div className= 'pt-2'>
-              <InputSelect changeValue={changeValue} value={sort} options ={sorts} />
-            </div>
-            
+        </div>
+        <div className='w-1/5 flex flex-col'>
+          <span className='uppercase font-semibold'>Sort By</span>
+          <div className='pt-2'>
+            <InputSelect changeValue={changeValue} value={sort} options={sorts} />
           </div>
+        </div>
       </div>
       <div className='w-main mt-8 m-auto'>
         <Masonry
@@ -103,15 +109,21 @@ const Products = () => {
           className="my-masonry-grid"
           columnClassName="my-masonry-grid_column"
         >
-          {products?.map((el) => (
+          {products?.Products?.map((el) => (
             <Product 
-              key={el.id} 
+              key={el.id || el._id} // Use a unique identifier for key
               pid={el.id} 
               productData={el} 
               normal={true}
             />
           ))}
         </Masonry>
+      </div>
+      <div className='w-main m-auto my-4 flex justify-end'>
+        <Pagination
+          totalCount={products?.counts}
+
+        />
       </div>
       <div className='w-full h-[500px]'>
       </div>

@@ -9,6 +9,7 @@ export const formatMoney = number => Number(number?.toFixed(1)).toLocaleString()
 export const renderStarFromNunber = (number) => {
     if(!Number(number)) return
     const star = []
+    number = Math.round(number)
     for(let i = 0; i<+number;i++) star.push(<AiFillStar key={i} color='orange' />)
     for(let i = 5; i>+number;i--) star.push(<AiOutlineStar key={i} color='orange'/>)
     return star
@@ -53,3 +54,18 @@ export const validate = ( payload, setInvalidField ) => {
     }
     return invalids
 }
+export const fotmatPrice = number => Math.round(number / 1000) * 1000
+export const generateRange = (start, end) => {
+    const length = end + 1 - start
+    return Array.from({ length }, (_, index) => start + index)
+  }
+  
+  export function getBase64(file) {
+    if (!file) return ''
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = error => reject(error);
+    });
+  }

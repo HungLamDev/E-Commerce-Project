@@ -18,6 +18,9 @@ var userSchema = new mongoose.Schema(
       required: true,
       unique: true,
     },
+    avatar: {
+      type: String,
+    },
     mobile: {
       type: String,
       required: true,
@@ -29,7 +32,8 @@ var userSchema = new mongoose.Schema(
     },
     role: {
       type: String,
-      default: "user",
+      enum : [1945, 1979],
+      default: 1979,
     },
     cart: [
       {
