@@ -21,17 +21,23 @@ const Products = () => {
   const [searchParams] = useSearchParams();
   const [activeClick, setActiveClick] = useState(null);
   const [sort, setSort] = useState('');
-  
+  const [params] = useSearchParams()
   const fetchProductsByCategory = async (queries) => {
-    const response = await apiGetProducts(queries); // { ...queries, category: category }
-    if (response.success) setProducts(response);
+    try {
+      const response = await apiGetProducts({...queries, limit: process.env.REACT_APP_LIMIT });
+      if (response.success) {
+        setProducts(response);
+      } else {
+        console.error("Failed to fetch products:", response.error);
+      }
+    } catch (error) {
+      console.error("Error fetching products:", error.message);
+    }
   };
+  
 
   useEffect(() => {
-    let param = []
-    for(let i of searchParams.entries()) param.push(i)
-    const queries = {}
-    for ( let i of searchParams ) queries[i[0]] = i[1]
+    const queries = Object.fromEntries([...params])
     let priceQuery = {}
     if(queries.from && queries.to){
       priceQuery = { $and: [
@@ -111,7 +117,7 @@ const Products = () => {
         >
           {products?.Products?.map((el) => (
             <Product 
-              key={el.id || el._id} // Use a unique identifier for key
+              key={el.id || el._id} 
               pid={el.id} 
               productData={el} 
               normal={true}

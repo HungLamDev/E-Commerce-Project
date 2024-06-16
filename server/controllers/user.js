@@ -10,6 +10,7 @@ const crypto = require("crypto");
 const user = require("../models/user");
 const makeToken = require('uniqid');
 const { response } = require("express");
+const {users} = require('../ultils/constant')
 
 // const register = asyncHandler(async (req, res) => {
 //   const { email, password, firstname, lastname } = req.body;
@@ -224,41 +225,50 @@ const getUsers = asyncHandler(async (req, res) => {
   const queries = { ...req.query };
   const excludeFields = ["limit", "sort", "page", "fields"];
   excludeFields.forEach((el) => delete queries[el]);
-  
+
   let queryString = JSON.stringify(queries);
-  queryString = queryString.replace(/\b(gte|gt|lt|lte)\b/g,matchedEl => `$${matchedEl}`);
+  queryString = queryString.replace(/\b(gte|gt|lt|lte)\b/g, matchedEl => `$${matchedEl}`);
   const formatedQueries = JSON.parse(queryString);
 
   if (queries?.name) formatedQueries.name = { $regex: queries.name, $options: 'i' };
+  const query = {}
+  if(req.query.q){
+    delete formatedQueries.q
+    formatedQueries['$or'] =[
+      {firstname: { $regex: req.query.q, $options: 'i' }},
+      {lastname: { $regex: req.query.q, $options: 'i' }},
+      {email: { $regex: req.query.q, $options: 'i' }}
+
+    ]
+  }
   let queryCommand = User.find(formatedQueries);
 
   if (req.query.sort) {
-    const sortby = req.query.sort.split(",").join("");
+    const sortby = req.query.sort.split(",").join(" ");
     queryCommand = queryCommand.sort(sortby);
   }
 
   if (req.query.fields) {
-    const fields = req.query.fields.split(",").join("");
+    const fields = req.query.fields.split(",").join(" ");
     queryCommand = queryCommand.select(fields);
   }
-
+ 
   const page = req.query.page || 1;
-  const limit = +req.query.limit || process.env.LIMIT_PRODUCTS;
+  const limit = +req.query.limit || parseInt(process.env.LIMIT_PRODUCTS, 10);
   const skip = (page - 1) * limit;
   queryCommand.skip(skip).limit(limit);
-  queryCommand.exec(async (err, response) => {
-    if (err) throw new Error(err.message);
-    
-    const counts = await User.find(formatedQueries).countDocuments();
-    
-    return res.status(200).json({
-        success: response ? true : false,
-        counts,
-        products: response ? response : 'Cannot get users',
-    });
+
+  const response = await queryCommand.exec();
+  const counts = await User.find(formatedQueries).countDocuments();
+
+  return res.status(200).json({
+    success: true,
+    counts,
+    users: response,
   });
-  
 });
+
+
 const deletesUser = asyncHandler(async (req, res) => {
   const { _id } = req.query;
   if (!_id) throw new Error("Missing inputs");
@@ -354,6 +364,13 @@ const updateCart = asyncHandler(async (req, res) => {
     });
   }
 });
+const createUsers = asyncHandler( async (req, res) =>{
+  const response = await User.create(users)
+  return res.status(200).json({
+    success: response ? true : false,
+    users: response ? response : "some thing went wrong",
+  });
+})
 module.exports = {
   register,
   login,
@@ -369,5 +386,6 @@ module.exports = {
   updateUserByAddress,
   updateCart,
   asyncHandler,
-  finalRegister
+  finalRegister,
+  createUsers
 };

@@ -78,8 +78,8 @@ const DealDaily = () => {
 
   return (
     <div className='border'>
-      <Link
-        to={`/${path.DETAIL_PRODUCT}/${dealdaily?._id}/${encodedTitle}`}
+       <Link
+        to={dealdaily ? `/${path.DETAIL_PRODUCT}/${dealdaily._id}/${encodedTitle}` : 'smartphone/666410f14c3b0f71ea636df0/IPhone%2015%20Pro%20Max%20(256GB)'}
         className='w-full flex-auto'
       >
         <div className='flex items-center justify-between p-4 text-[20px]'>
@@ -88,14 +88,24 @@ const DealDaily = () => {
           <span className='flex-2'></span>
         </div>
         <div className='w-full flex flex-col items-center gap-2 pb-2'>
-          {dealdaily?.images?.length > 0 && (
-            <img src={dealdaily.images[0]} alt='Product' className='w-full object-contain' />
-          )}
+        {dealdaily?.images?.length > 0 ? (
+          <img 
+            src={dealdaily.images[0]} 
+            alt='Product' 
+            className='w-full object-contain' 
+          />
+        ) : (
+          <img 
+            src='https://cdn2.cellphones.com.vn/insecure/rs:fill:0:358/q:90/plain/https://cellphones.com.vn/media/catalog/product/i/p/iphone-15-pro-max_3.png' 
+            alt='Product' 
+            className='w-full object-contain' 
+          />
+        )}
           <span className='line-clamp-1 textSize-[20px] pl-2'>
-            {dealdaily?.title}
+            {dealdaily?.title || 'IPhone 15 Pro Max (256GB)' }
           </span>
           <span>
-            {`${formatMoney(dealdaily?.price)} VND`}
+            {dealdaily?.price ? `${formatMoney(dealdaily.price)} VND` : '28,790,000 VND'}
           </span>
         </div>
       </Link>

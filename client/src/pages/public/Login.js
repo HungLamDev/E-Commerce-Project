@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { apiRegister, apiLogin, apiForgotPassword, apiFinalRegister } from '../../apis';
 import Swal from 'sweetalert2';
 import {useNavigate, Link} from 'react-router-dom'
-import path from '../../ultils/path';
+import path from 'ultils/path';
 import {login} from '../../store/user/userSlice'
 import { useDispatch } from 'react-redux';
 import { toast } from 'react-toastify';
@@ -109,13 +109,12 @@ const Login = () => {
                         >
                             submit
                         </button>
-                        <button className='px-4 py-2 bg-red-500 font-semibold text-white rounded-md ml-4'>
-                            <Link 
-                            to={`/${path.Login}`}
-                            >
-                                Cance
-                            </Link>
-                        </button>
+                        <Link className='px-4 py-2 bg-red-500 font-semibold text-white rounded-md ml-4'
+                        to={`/${path.HOME}`}
+                        >
+                            Cance
+                           
+                        </Link>
                 </div>
             </div>}
             

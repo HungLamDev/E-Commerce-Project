@@ -1,5 +1,5 @@
 import React, { memo } from 'react';
-import avatar from 'assets/a.jpg';
+import avatar from 'assets/avartar.jpg';
 import moment from 'moment';
 import { renderStarFromNunber } from '../../ultils/helpers';
 
